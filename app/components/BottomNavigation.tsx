@@ -1,7 +1,7 @@
 'use client';
 import { usePathname, useRouter } from 'next/navigation';
 import React from 'react';
-import { GoBell, GoHome, GoPerson } from 'react-icons/go';
+import { GoHome, GoPerson } from 'react-icons/go';
 
 const BottomNavigation = () => {
   const pathname = usePathname();
