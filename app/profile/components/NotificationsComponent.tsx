@@ -25,8 +25,7 @@ const NotificationsComponent = () => {
     conditions: [
       {
         field: 'channelOwnerUid', operator: '==',
-        // value: authFirebase.currentUser?.uid || ''
-        value: 'PdSj1xK3K7WjlOi9QtiCJR629qN2'
+        value: authFirebase.currentUser?.uid || ''
       }
     ],
     limitQuery: 10
@@ -38,8 +37,7 @@ const NotificationsComponent = () => {
     conditions: [
       {
         field: 'channelOwnerUid', operator: '==',
-        // value: authFirebase.currentUser?.uid || ''
-        value: 'PdSj1xK3K7WjlOi9QtiCJR629qN2'
+        value: authFirebase.currentUser?.uid || ''
       }
     ],
   })
