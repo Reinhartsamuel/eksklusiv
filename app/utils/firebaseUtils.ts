@@ -8,6 +8,7 @@ import {
   deleteDoc,
   doc,
   DocumentData,
+  getCountFromServer,
   getDoc,
   getDocs,
   limit,
@@ -127,26 +128,6 @@ export const setDocumentFirebase = async (
   }
 };
 
-//example call :
-
-// const collectionName = 'namaKoleksi';
-// const docName = 'namaDokumen';
-// const data = {
-//   field1: 'Nilai 1',
-//   field2: 'Nilai 2',
-// };
-
-// try {
-//   const result = await setDocumentFirebase(collectionName, docName, data, companyId);
-//   console.log(result); // Pesan toast yang berhasil
-// } catch (error) {
-//   console.log('Terjadi kesalahan:', error);
-// }
-
-// finish
-
-// add document firebase
-
 export const addDocumentFirebase = async (collectionName: string, data: DocumentData, companyId?: string) => {
   try {
     data.createdAt = new Date();
@@ -202,19 +183,6 @@ export const deleteDocumentFirebase = async (collectionName: string, docName: st
   }
 };
 
-//Example Call
-
-// const collectionName = 'namaKoleksi';
-// const docName = 'namaDokumen';
-
-// try {
-//   const result = await deleteDocumentFirebase(collectionName, docName);
-//   console.log(result); // Pesan toast yang berhasil
-// } catch (error) {
-//   console.log('Terjadi kesalahan:', error);
-// }
-//Finish
-
 export const arrayUnionFirebase = async (
   collectionName: string,
   docName: string,
@@ -239,24 +207,6 @@ export const arrayUnionFirebase = async (
   }
 };
 
-// Example Call
-
-// const collectionName = 'namaKoleksi';
-// const docName = 'namaDokumen';
-// const field = 'namaField';
-// const values = ['nilai1', 'nilai2'];
-
-// try {
-//   const result = await arrayUnionFirebase(collectionName, docName, field, values);
-//   console.log(result); // Pesan toast yang berhasil
-// } catch (error) {
-//   console.log('Terjadi kesalahan:', error);
-// }
-
-// finish
-
-// Array Remove Firebase
-
 export const arrayRemoveFirebase = async (
   collectionName: string,
   docName: string,
@@ -278,5 +228,32 @@ export const arrayRemoveFirebase = async (
     if (error instanceof Error) {
       throw new Error(error.message + ' Failed to send  error message');
     }
+  }
+};
+
+export const countDocumentsFirebase = async (
+  collectionName: string,
+  conditions: { field: string; operator: '==' | '<' | '<=' | '>' | '>='; value: string }[] = [],
+) => {
+  try {
+    let collectionRef: Query<DocumentData> = collection(db, collectionName);
+  
+    // Add conditions if any
+    if (conditions.length > 0) {
+      conditions.forEach((condition) => {
+        const { field, operator, value } = condition;
+        collectionRef = query(collectionRef, where(field, operator, value));
+      });
+    }
+  
+    const countQuery = await getCountFromServer(collectionRef);
+    return countQuery.data().count; // Return the count of documents in the collection
+  } catch (error) {
+    // Ensure the error is of type Error
+    if (error instanceof Error) {
+      console.error(`Error fetching collection: ${error.message}`);
+      throw new Error(error.message); // Rethrow the error for handling in the component
+    }
+    throw new Error('An unknown error occurred');
   }
 };

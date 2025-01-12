@@ -2,13 +2,16 @@
 /* eslint-disable jsx-a11y/alt-text */
 'use client';
 import { authFirebase } from '@/app/config/firebase';
-import useFetchData from '@/app/hooks/QueryHook';
+import useFetchData from '../../hooks/queryHook';
 import { updateDocumentFirebase } from '@/app/utils/firebaseUtils';
 import { priceFormat } from '@/app/utils/priceFormat';
 import { Payments } from '@/types';
 import moment from 'moment';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Swal from 'sweetalert2';
+import clsx from 'clsx';
+import InfiniteScroll from 'react-infinite-scroll-component';
+import useCountDocuments from '@/app/hooks/countHook';
 
 
 
@@ -17,10 +20,28 @@ const NotificationsComponent = () => {
   const [detail, setDetail] = useState({} as Payments);
   const [loading, setLoading] = useState(false);
 
-  const { data: payments } = useFetchData({
+  const { data: payments, loadMore, fetchData } = useFetchData({
     collectionName: 'payments',
-    conditions: [{ field: 'channelOwnerUid', operator: '==', value: authFirebase.currentUser?.uid || '' }],
+    conditions: [
+      {
+        field: 'channelOwnerUid', operator: '==',
+        // value: authFirebase.currentUser?.uid || ''
+        value: 'PdSj1xK3K7WjlOi9QtiCJR629qN2'
+      }
+    ],
     limitQuery: 10
+  })
+
+
+  const { count: notificatioNCount } = useCountDocuments({
+    collectionName: 'payments',
+    conditions: [
+      {
+        field: 'channelOwnerUid', operator: '==',
+        // value: authFirebase.currentUser?.uid || ''
+        value: 'PdSj1xK3K7WjlOi9QtiCJR629qN2'
+      }
+    ],
   })
   function openDetail(data: Payments) {
     setDetail(data);
@@ -28,6 +49,8 @@ const NotificationsComponent = () => {
   };
 
   async function handleApprove(arg: boolean) {
+    if (authFirebase.currentUser?.uid !== detail.channelOwnerUid)
+      return console.log('you are not the owner!')
     setLoading(true);
     try {
       await updateDocumentFirebase('payments', detail.id, { status: arg ? 'PAID' : 'REJECTED' });
@@ -71,53 +94,79 @@ const NotificationsComponent = () => {
     }
   }
 
-  // async function fetchData() {
-  //   try {
-  //     if (authFirebase.currentUser?.uid) {
-  //       const res = await getCollectionFirebase('payments', [{
-  //         field: 'channelOwnerUid',
-  //         operator: '==',
-  //         value: authFirebase.currentUser?.uid
-  //       }])
-  //       setPayments(res);
-  //       console.log(res, 'res');
-  //     }
-  //   } catch (error: unknown) {
-  //     if (error instanceof Error)
-  //       console.log(error.message)
-  //   }
-  // }
-
-  useEffect(() => {
-    // fetchData()
-  }, [])
-
   return (
     <div className='flex flex-col gap-2'>
-      {Array.isArray(payments) && payments.map((x, i) => (
-        <div
-          key={i}
-          onClick={() => openDetail(x)}
-          className='flex w-full justify-between border-b border-gray-200 cursor-pointer hover:bg-gray-100 p-4 lg:p-5 active:scale-95 transition-ease 1s'
-        >
-          <div className='flex flex-row items-center gap-2'>
-            <img src={x.userAvatar || 'https://liccar.com/wp-content/uploads/png-transparent-head-the-dummy-avatar-man-tie-jacket-user-768x768.png'} className='w-10 h-10 rounded-full' />
-            <p className='text-xs lg:text-sm text-gray-600'>
-              <span className='font-bold text-gray-900'>{x.channelName}</span>{' '}
-              {x.name} membayar Rp {priceFormat(x.amount)} untuk channel {x?.channelName}
-              <span className='text-sm text-gray-600'> {moment(x.createdAt.toDate()).fromNow()}</span>
-            </p>
-            {
-              x.status !== 'PAID' ? <div className="badge badge-xs p-0 badge-error">{x.status}</div> :
-                <div className="badge badge-xs p-0 badge-secondary">PAID</div>
-            }
+      <InfiniteScroll
+        dataLength={notificatioNCount} //This is important field to render the next data
+        next={() => {
+          console.log('load more');
+          loadMore();
+        }}
+        hasMore={true}
+        loader={
+          <div className='w-full flex justify-center'>
+            <span className="loading loading-ring loading-md"></span>
           </div>
+        }
+        endMessage={
+          <p style={{ textAlign: 'center' }}>
+            <b>Yay! You have seen it all</b>
+          </p>
+        }
+        // below props only if you need pull down functionality
+        refreshFunction={fetchData}
+        pullDownToRefresh
+        pullDownToRefreshThreshold={50}
+        pullDownToRefreshContent={
+          <h3 style={{ textAlign: 'center' }}>&#8595; Pull down to refresh</h3>
+        }
+        releaseToRefreshContent={
+          <h3 style={{ textAlign: 'center' }}>&#8593; Release to refresh</h3>
+        }
+      >
+        {Array.isArray(payments) && payments.map((x, i) => (
+          <div
+            key={i}
+            onClick={() => openDetail(x)}
+            className='flex w-full justify-between border-b border-gray-200 cursor-pointer hover:bg-gray-100 p-4 lg:p-5 active:scale-95 transition-ease 1s'
+          >
+            <div className='flex flex-row items-center gap-2'>
+              <img src={x.userAvatar || 'https://liccar.com/wp-content/uploads/png-transparent-head-the-dummy-avatar-man-tie-jacket-user-768x768.png'} className='w-10 h-10 rounded-full' />
+              <div className='flex flex-col'>
+                <p className='text-xs lg:text-sm text-gray-600'>
+                  <span className='font-bold text-gray-900'>{x.name}</span>{' '}
+                   membayar Rp {priceFormat(x.amount)} untuk channel {x?.channelName}
 
-          <div className='min-w-[100px] flex justify-end'>
-            <img src={x.receiptUrl || 'https://liccar.com/wp-content/uploads/png-transparent-head-the-dummy-avatar-man-tie-jacket-user-768x768.png'} className='w-20 aspect-square rounded-sm object-contain border-[1px] border-gray-200' />
+                </p>
+
+                <div className='flex gap-2'>
+                  <p className='text-sm text-gray-600'> {moment(x.createdAt.toDate()).fromNow()}</p>
+                  <span
+                    className={
+                      clsx("font-bold me-2 px-1 py-0.5 rounded text-xs w-fit",
+                        x.status === 'PAID' ?
+                          'bg-pink-100 text-pink-800' :
+                          'bg-green-100 text-green-800')
+                    }>
+                    {x.status}
+                  </span>
+                </div>
+
+              </div>
+
+            </div>
+
+            <div className='min-w-[100px] flex justify-end'>
+              <img src={x.receiptUrl || 'https://liccar.com/wp-content/uploads/png-transparent-head-the-dummy-avatar-man-tie-jacket-user-768x768.png'} className='w-20 aspect-square rounded-sm object-contain border-[1px] border-gray-200' />
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </InfiniteScroll>
+
+
+
+
+
       <dialog id="detail_modal" className="modal">
         <div className="modal-box w-full max-w-2xl">
           <form method="dialog">
@@ -137,7 +186,10 @@ const NotificationsComponent = () => {
           <div className='flex items-center gap-3 w-full justify-end mt-5'>
             {loading ?
               <span className="loading loading-dots loading-lg"></span> :
-              <button className='btn btn-primary text-white' onClick={() => handleApprove(true)}>Approve</button>}
+              <button className={clsx('btn btn-primary text-white',
+                detail.status === 'PAID' && 'btn-disabled'
+              )} disabled={detail.status === 'PAID'} onClick={() => handleApprove(true)}>Approve</button>
+            }
             {loading ?
               <span className="loading loading-dots loading-lg"></span> :
               <button className='btn btn-error text-white' onClick={() => handleApprove(false)}>Deny</button>}
