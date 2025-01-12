@@ -31,7 +31,7 @@ export interface Payments {
     channelTelegram: string;
     userTelegram: string | null;
     userWhatsapp: string | null;
-    uid: string;
+    uid: string | null;
     receiptUrl: string;
     userAvatar: string | null;
     createdAt: Timestamp;

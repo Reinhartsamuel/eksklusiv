@@ -93,7 +93,7 @@ const ProfilePage = () => {
         channelName : channelData.name,
         channelOwnerUid : channelData.channelOwnerUid,
         channelTelegram : channelData.telegram,
-        uid : authFirebase.currentUser?.uid,
+        uid : authFirebase.currentUser?.uid || null,
         userAvatar : authFirebase.currentUser?.photoURL || null,
         status:'PENDING'
       };
