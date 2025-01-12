@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Sociall',
-  description: 'Monetize your digital presence with Sociall',
+  title: 'Eksklusiv',
+  description: 'Monetize your digital presence with Eksklusiv',
 };
 
 export default function RootLayout({

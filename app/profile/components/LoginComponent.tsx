@@ -22,6 +22,7 @@ const LoginComponent = () => {
           email: user.email,
           username: '',
           photoURL: user.photoURL,
+          name: user.displayName || null,
         })
       }
     } catch (error: unknown) {

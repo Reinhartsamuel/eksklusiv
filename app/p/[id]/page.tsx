@@ -35,8 +35,8 @@ const ProfilePage = () => {
   const { id } = params;
   const [uploading, setUploading] = useState(false);
   const [inputs, setInputs] = useState({
-    name : '',
-    email : '',
+    name: '',
+    email: '',
     userWhatsapp: '',
     userTelegram: '',
     receiptUrl: ''
@@ -83,22 +83,64 @@ const ProfilePage = () => {
   }
 
   async function onSubmit() {
+    // return console.log(inputs)
+    if (!inputs.name) return Swal.fire('Kamu belum mengisi nama kamu!', '', 'warning');
+    if (!inputs.email) return Swal.fire('Kamu belum mengisi email kamu!', '', 'warning');
+    if (!inputs.userWhatsapp) return Swal.fire('Kamu belum mengisi Whatsapp kamu!', '', 'warning');
+    if (!inputs.userTelegram) return Swal.fire('Kamu belum mengisi Telegram kamu!', '', 'warning');
+    if (!inputs.receiptUrl) return Swal.fire('Isi semua data, ya!', 'Kamu harus upload bukti bayar berlangganan', 'warning');
+
     try {
       // return console.log(inputs)
       const saveData = {
         ...inputs,
-        accountHolder : channelData.accountHolder,
-        accountNumber : channelData.accountNumber,
-        amount : channelData?.discountedPrice || channelData?.price,
-        channelName : channelData.name,
-        channelOwnerUid : channelData.channelOwnerUid,
-        channelTelegram : channelData.telegram,
-        uid : authFirebase.currentUser?.uid || null,
-        userAvatar : authFirebase.currentUser?.photoURL || null,
-        status:'PENDING'
+        accountHolder: channelData.accountHolder,
+        accountNumber: channelData.accountNumber,
+        amount: channelData?.discountedPrice || channelData?.price,
+        channelOwnerUid: channelData.channelOwnerUid,
+        channelOwnerName: channelData.name,
+        channelOwnerEmail: channelData.channelOwnerEmail,
+        channelName: channelData.name,
+        channelTelegram: channelData.telegram,
+        uid: authFirebase.currentUser?.uid || null,
+        userAvatar: authFirebase.currentUser?.photoURL || null,
+        status: 'PENDING'
       };
       console.log(saveData, 'saveData');
       await addDocumentFirebase('payments', saveData, 'eksklusiv');
+
+
+      const xx = await fetch('/api/email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: channelData.channelOwnerName,
+          email: channelData.channelOwnerEmail,
+          subject: `${inputs.name} membayar Rp ${priceFormat(saveData.amount)} untuk ${channelData.name}`,
+          htmlContent: `<p>${inputs.name} membayar Rp ${priceFormat(saveData.amount)} untuk Pembayaran Channel ${saveData.channelName} </p>
+                <br />
+             <p>Nama : ${saveData.name}</p> <br/>
+             <p>Email : ${saveData.email}</p> <br/>
+             <p>Whatsapp : ${saveData.name}</p> <br/>
+             <p>Username Telegram : ${saveData.userTelegram}</p> <br/>
+             <p>Jumlah pembayaran : ${saveData.userWhatsapp}</p> <br/>
+             <p>Receipt</p> <br/>
+                <img
+          src="${inputs.receiptUrl}"
+          width="45%"
+          style="padding:0;background-color:white;"
+        />
+                `,
+          bcc: [
+            { name: 'Reinhart', email: 'reinhartsams@gmail.com' },
+          ],
+        }),
+      });
+      const resEmail = await xx.json();
+      console.log('resEmail', resEmail)
+      window.location.reload();
       Swal.fire({
         icon: 'success',
         title: 'Pembayaran kamu sedang diproses',
@@ -146,12 +188,12 @@ const ProfilePage = () => {
         id='profile-banner'
         className='w-full h-1/2 object-cover'
         src={
-          channelData.banner ||   'https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png'
+          channelData.banner || 'https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png'
         }
       />
       <img
         alt='avatar'
-        src={channelData.avatar ||   'https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png'}
+        src={channelData.avatar || 'https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png'}
         className='rounded-full w-[8rem] h-[8rem] translate-x-[30px] -translate-y-[40px] border-4 border-white'
       />
       <div className='px-5'>
@@ -252,7 +294,7 @@ const ProfilePage = () => {
                 onChange={(e) => setInputs({ ...inputs, name: e.target.value })}
                 type='text'
                 placeholder='Masukkan nama kamu'
-                className='input input-bordered w-full'
+                className='input input-bordered border-2 w-full'
               />
             </label>
           </div>
@@ -307,7 +349,6 @@ const ProfilePage = () => {
             )}
           </div>
 
-          <button className='btn btn-primary text-white' onClick={onSubmit}>Submit</button>
 
           {inputs?.receiptUrl ? (
             <div className='flex w-full justify-center'>
@@ -352,6 +393,7 @@ const ProfilePage = () => {
               </label>
             </div>
           )}
+          <button className='btn btn-primary text-white' onClick={onSubmit}>Submit</button>
         </div>
       </div>
       {/* MODAL */}

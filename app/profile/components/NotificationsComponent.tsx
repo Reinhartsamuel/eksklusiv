@@ -2,7 +2,8 @@
 /* eslint-disable jsx-a11y/alt-text */
 'use client';
 import { authFirebase } from '@/app/config/firebase';
-import { getCollectionFirebase, updateDocumentFirebase } from '@/app/utils/firebaseUtils';
+import useFetchData from '@/app/hooks/QueryHook';
+import { updateDocumentFirebase } from '@/app/utils/firebaseUtils';
 import { priceFormat } from '@/app/utils/priceFormat';
 import { Payments } from '@/types';
 import moment from 'moment';
@@ -10,12 +11,17 @@ import React, { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 
 
+
 const NotificationsComponent = () => {
-  const [payments, setPayments] = useState<Payments[] | Error | null>([]);
+  // const [payments, setPayments] = useState<Payments[] | Error | null>([]);
   const [detail, setDetail] = useState({} as Payments);
   const [loading, setLoading] = useState(false);
 
-
+  const { data: payments } = useFetchData({
+    collectionName: 'payments',
+    conditions: [{ field: 'channelOwnerUid', operator: '==', value: authFirebase.currentUser?.uid || '' }],
+    limitQuery: 10
+  })
   function openDetail(data: Payments) {
     setDetail(data);
     (document.getElementById('detail_modal') as HTMLDialogElement).showModal()
@@ -47,7 +53,7 @@ const NotificationsComponent = () => {
       const res = await resEmail.json();
       console.log(res, 'res');
       (document.getElementById('detail_modal') as HTMLDialogElement).close()
-      fetchData();
+      // fetchData();
       Swal.fire({
         icon: 'success',
         title: 'Berhasil',
@@ -65,25 +71,25 @@ const NotificationsComponent = () => {
     }
   }
 
-  async function fetchData() {
-    try {
-      if (authFirebase.currentUser?.uid) {
-        const res = await getCollectionFirebase('payments', [{
-          field: 'channelOwnerUid',
-          operator: '==',
-          value: authFirebase.currentUser?.uid
-        }])
-        setPayments(res);
-        console.log(res, 'res');
-      }
-    } catch (error: unknown) {
-      if (error instanceof Error)
-        console.log(error.message)
-    }
-  }
+  // async function fetchData() {
+  //   try {
+  //     if (authFirebase.currentUser?.uid) {
+  //       const res = await getCollectionFirebase('payments', [{
+  //         field: 'channelOwnerUid',
+  //         operator: '==',
+  //         value: authFirebase.currentUser?.uid
+  //       }])
+  //       setPayments(res);
+  //       console.log(res, 'res');
+  //     }
+  //   } catch (error: unknown) {
+  //     if (error instanceof Error)
+  //       console.log(error.message)
+  //   }
+  // }
 
   useEffect(() => {
-    fetchData()
+    // fetchData()
   }, [])
 
   return (
@@ -102,8 +108,8 @@ const NotificationsComponent = () => {
               <span className='text-sm text-gray-600'> {moment(x.createdAt.toDate()).fromNow()}</span>
             </p>
             {
-              x.status !== 'PAID' ? <div className="badge badge-xs badge-error">{x.status}</div> :
-                <div className="badge badge-xs badge-secondary">PAID</div>
+              x.status !== 'PAID' ? <div className="badge badge-xs p-0 badge-error">{x.status}</div> :
+                <div className="badge badge-xs p-0 badge-secondary">PAID</div>
             }
           </div>
 

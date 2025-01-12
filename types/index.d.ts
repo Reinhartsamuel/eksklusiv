@@ -4,9 +4,10 @@ export interface Channel extends DocumentData {
     id: string;
     accountHolder: string;
     accountNumber: string;
-    name: string;
-    email: string;
+    channelName: string;
     channelOwnerUid: string;
+    channelOwnerEmail:string;
+    channelOwnerName:string;
     createdAt?: Timestampstring;
     description: string;
     banner: string | null;
@@ -19,12 +20,14 @@ export interface Channel extends DocumentData {
 }
 
 
-export interface Payments {
+export interface Payments extends DocumentData {
     id: string;
     accountHolder: string;
     accountNumber: string;
-    amount: numberstring;
+    amount: number;
     channelOwnerUid: string;
+    channelOwnerName: string;
+    channelOwnerEmail: string;
     channelName: string;
     name: string;
     email: string;
