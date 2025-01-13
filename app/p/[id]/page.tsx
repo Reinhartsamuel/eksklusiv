@@ -140,11 +140,17 @@ const ProfilePage = () => {
       });
       const resEmail = await xx.json();
       console.log('resEmail', resEmail)
-      window.location.reload();
+    
       Swal.fire({
         icon: 'success',
         title: 'Pembayaran kamu sedang diproses',
         text: 'Admin akan segera mengonfirmasi pembayaranmu. Invite link akan dikirimkan setelah pembayaran dikonfirmasi.',
+        showConfirmButton: true,
+        confirmButtonText : 'Tutup'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.reload();
+        }
       });
     } catch (error: unknown) {
       if (error instanceof Error) {
