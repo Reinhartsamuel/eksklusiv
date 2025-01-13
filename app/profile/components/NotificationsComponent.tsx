@@ -28,7 +28,9 @@ const NotificationsComponent = () => {
         value: authFirebase.currentUser?.uid || ''
       }
     ],
-    limitQuery: 10
+    limitQuery: 10,
+    authRequired: true,
+    dependencies: [authFirebase.currentUser?.email],
   })
 
 

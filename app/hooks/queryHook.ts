@@ -2,7 +2,7 @@
 import { collection, CollectionReference, DocumentData, limit, onSnapshot, orderBy, query, where } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { getCollectionFirebase } from '../utils/firebaseUtils';
-import { db } from '../config/firebase';
+import { authFirebase, db } from '../config/firebase';
 
 
 interface UseFetchDataProps {
@@ -11,6 +11,8 @@ interface UseFetchDataProps {
     collectionName?: string;
     conditions?: { field: string; operator: '==' | '<' | '<=' | '>' | '>='; value: string }[];
     defaultLastVisible?: any;
+    dependencies?: any[];
+    authRequired: boolean;
 }
 
 const useFetchData = ({
@@ -19,6 +21,8 @@ const useFetchData = ({
     collectionName = 'webhooks',
     conditions = [],
     defaultLastVisible = null,
+    dependencies = [],
+    authRequired = true
 }: UseFetchDataProps) => {
     const [data, setData] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
@@ -27,6 +31,7 @@ const useFetchData = ({
     const [lastVisible, setLastVisible] = useState<DocumentData>({});
 
     const fetchData = async () => {
+        if (authRequired && !authFirebase.currentUser?.email) return;
         setLoading(true);
         console.log('fetching...');
         try {
@@ -93,12 +98,12 @@ const useFetchData = ({
         }
 
         return () => unsubscribe();
-    }, []);
+    }, [...dependencies, authRequired]);
 
     const loadMore = async () => {
         setIsFetchingMore(true);
         if (!lastVisible?.createdAt) return setIsFetchingMore(false);
-        
+
         try {
             const res = await getCollectionFirebase(
                 collectionName,
