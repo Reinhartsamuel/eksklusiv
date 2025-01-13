@@ -13,7 +13,7 @@ const ChannelsComponent = () => {
   const [error, setError] = useState<string | null>(null);
 
   const { data, loadMore, fetchData, isFetchingMore } = useFetchData({
-    collectionName: 'payments',
+    collectionName: 'channels',
     conditions: [
       {
         field: 'channelOwnerUid', operator: '==',
@@ -31,8 +31,7 @@ const ChannelsComponent = () => {
     conditions: [
       {
         field: 'channelOwnerUid', operator: '==',
-        // value: authFirebase.currentUser?.uid || ''
-        value: 'PdSj1xK3K7WjlOi9QtiCJR629qN2'
+        value: authFirebase.currentUser?.uid || ''
       }
     ],
   })
