@@ -17,11 +17,12 @@ const ChannelsComponent = () => {
     conditions: [
       {
         field: 'channelOwnerUid', operator: '==',
-        // value: authFirebase.currentUser?.uid || ''
-        value: 'PdSj1xK3K7WjlOi9QtiCJR629qN2'
+        value: authFirebase.currentUser?.uid || ''
       }
     ],
-    limitQuery: 10
+    limitQuery: 10,
+    dependencies : [],
+    authRequired : true
   })
 
 
@@ -59,7 +60,7 @@ const ChannelsComponent = () => {
   return (
     <div>
       {error && <p>Error: {error}</p>}
-      {channels.map((channel, i) => (
+      {data.map((channel, i) => (
         <CardPost key={i} data={channel} />
       ))}
       <InfiniteScroll
@@ -77,7 +78,7 @@ const ChannelsComponent = () => {
         }
         endMessage={
           <p style={{ textAlign: 'center' }}>
-            <b>Ups, kamu belum punya channel! <span><a href='/'>Buat sekarang</a></span></b>
+            <b>Ups, kamu belum punya channel!</b>
           </p>
         }
         // below props only if you need pull down functionality
