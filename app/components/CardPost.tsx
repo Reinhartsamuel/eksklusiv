@@ -20,8 +20,8 @@ const CardPost = ({ data }: CardPostProps) => {
           />
         </figure>
         <div className='flex p-4 '>
-          <p>
-            <strong>{data.name}</strong> {data.description}
+          <p className='text-clip'>
+            <strong className='text-2xl'>{data.channelName}</strong> {data.description}
           </p>
         </div>
       </div>

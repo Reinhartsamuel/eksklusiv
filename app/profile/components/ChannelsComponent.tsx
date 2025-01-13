@@ -1,18 +1,13 @@
 'use client';
 import CardPost from '@/app/components/CardPost';
 import { authFirebase } from '@/app/config/firebase';
-import { getCollectionFirebase } from '@/app/utils/firebaseUtils';
-import { Channel } from '@/types';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import useFetchData from '@/app/hooks/queryHook';
 import useCountDocuments from '@/app/hooks/countHook';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
 const ChannelsComponent = () => {
-  const [channels, setChannels] = useState<Channel[]>([]);
-  const [error, setError] = useState<string | null>(null);
-
-  const { data, loadMore, fetchData, isFetchingMore } = useFetchData({
+  const { data, loadMore, fetchData, isFetchingMore, error } = useFetchData({
     collectionName: 'channels',
     conditions: [
       {
@@ -21,8 +16,8 @@ const ChannelsComponent = () => {
       }
     ],
     limitQuery: 10,
-    dependencies : [],
-    authRequired : true
+    dependencies: [],
+    authRequired: true
   })
 
 
@@ -36,32 +31,9 @@ const ChannelsComponent = () => {
     ],
   })
 
-
-  useEffect(() => {
-    (async function () {
-      try {
-        const res = await getCollectionFirebase(
-          'channels',
-          [{ field: 'channelOwnerUid', operator: '==', value: authFirebase.currentUser?.uid || '' }],
-          { field: 'createdAt', direction: 'desc' },
-          10
-        );
-        setChannels(res);
-      } catch (error) {
-        if (error instanceof Error) {
-          console.error(error.message);
-          setError(error.message);
-        }
-      }
-    })();
-  }, []);
-
   return (
     <div>
-      {error && <p>Error: {error}</p>}
-      {data.map((channel, i) => (
-        <CardPost key={i} data={channel} />
-      ))}
+      {error && <p>Error: {error.message}</p>}
       <InfiniteScroll
         dataLength={channelsCount} //This is important field to render the next data
         next={() => {
@@ -91,7 +63,7 @@ const ChannelsComponent = () => {
           <h3 style={{ textAlign: 'center' }}>&#8593; Release to refresh</h3>
         }
       >
-        {channels.map((channel, i) => (
+        {data.map((channel, i) => (
           <CardPost key={i} data={channel} />
         ))}
       </InfiniteScroll>

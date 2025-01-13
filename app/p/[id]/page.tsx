@@ -255,17 +255,17 @@ const ProfilePage = () => {
           id='payment'
           className='mt-10 flex flex-col items-center justify-center rounded-xl border-2 border-gray-200 border-dashed p-5'
         >
-          <p>Silakan Bayar Ke Nomor Rekening Berikut ini:</p>
+          <p>Silakan melakukan transfer Ke Nomor Rekening Berikut ini:</p>
           <img
             src='https://buatlogoonline.com/wp-content/uploads/2022/10/Logo-BCA-PNG.png'
             className='w-20'
           />
           <p className='font-bold text-gray-800 text-sm'>BCA</p>
           <div className='flex items-center'>
-            <p className='font-bold text-2xl'>Handika Pernanda</p>
+            <p className='font-bold text-2xl'>{channelData.accountHolder}</p>
           </div>
           <div className='flex items-center'>
-            <p className='font-light text-xl'>6800838582</p>
+            <p className='font-light text-xl'>{channelData.accountNumber}</p>
             <button
               onClick={() => copyTextToClipboard('6800838582')}
               className='ease-out duration-100 hover:scale-105 hover:shadow-lg active:scale-95 text-gray-700 bg-gray-100 hover:bg-gray-100 focus:ring-gray-300 font-small rounded-lg text-sm px-2 py-2.5 me-2 mb-2'
@@ -352,7 +352,7 @@ const ProfilePage = () => {
 
           {inputs?.receiptUrl ? (
             <div className='flex w-full justify-center'>
-              <img src={inputs?.receiptUrl} className='w-3/4' />
+              <img src={inputs.receiptUrl} className='w-3/4' />
             </div>
           ) : (
             <div className='flex items-center justify-center w-full'>
