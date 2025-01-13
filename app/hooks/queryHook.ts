@@ -22,6 +22,7 @@ const useFetchData = ({
 }: UseFetchDataProps) => {
     const [data, setData] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
+    const [isFetchingMore, setIsFetchingMore] = useState(false);
     const [error, setError] = useState<Error | null>(null);
     const [lastVisible, setLastVisible] = useState<DocumentData>({});
 
@@ -95,6 +96,9 @@ const useFetchData = ({
     }, []);
 
     const loadMore = async () => {
+        setIsFetchingMore(true);
+        if (!lastVisible?.createdAt) return setIsFetchingMore(false);
+        
         try {
             const res = await getCollectionFirebase(
                 collectionName,
@@ -109,10 +113,12 @@ const useFetchData = ({
         } catch (error) {
             console.log((error as Error).message, '::error load more, conditions:', conditions);
 
+        } finally {
+            setIsFetchingMore(false)
         }
     };
 
-    return { data, loading, error, loadMore, fetchData };
+    return { data, loading, error, loadMore, fetchData, isFetchingMore };
 };
 
 export default useFetchData;

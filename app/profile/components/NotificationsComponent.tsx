@@ -20,7 +20,7 @@ const NotificationsComponent = () => {
   const [detail, setDetail] = useState({} as Payments);
   const [loading, setLoading] = useState(false);
 
-  const { data: payments, loadMore, fetchData } = useFetchData({
+  const { data: payments, loadMore, fetchData, isFetchingMore } = useFetchData({
     collectionName: 'payments',
     conditions: [
       {
@@ -102,13 +102,14 @@ const NotificationsComponent = () => {
         }}
         hasMore={true}
         loader={
+          isFetchingMore && 
           <div className='w-full flex justify-center'>
             <span className="loading loading-ring loading-md"></span>
           </div>
         }
         endMessage={
           <p style={{ textAlign: 'center' }}>
-            <b>Yay! You have seen it all</b>
+            <b>Tidak ada data baru</b>
           </p>
         }
         // below props only if you need pull down functionality
@@ -143,8 +144,9 @@ const NotificationsComponent = () => {
                     className={
                       clsx("font-bold me-2 px-1 py-0.5 rounded text-xs w-fit",
                         x.status === 'PAID' ?
-                          'bg-pink-100 text-pink-800' :
-                          'bg-green-100 text-green-800')
+                          'bg-green-100 text-green-800' :
+                          'bg-pink-100 text-pink-800'
+                          )
                     }>
                     {x.status}
                   </span>
