@@ -250,10 +250,10 @@ const ProfilePage = () => {
         <div className='w-full relative'>
           <Image src={pricetag} alt='price' className='w-full' />
           <div className='absolute w-full font-bold top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center'>
-            {channelData.discountedPrice && <p className=' text-3xl line-through text-black decoration-red-200'>
+            {channelData.discountedPrice && <p className=' text-lg lg:text-3xl line-through text-black decoration-red-200'>
               Rp {priceFormat(channelData.price)}
             </p>}
-            <p className='text-5xl text-white text-'>Rp {priceFormat(channelData?.discountedPrice || channelData.price)}</p>
+            <p className='text-3xl lg:text-5xl text-white text-'>Rp {priceFormat(channelData?.discountedPrice || channelData.price)}</p>
           </div>
         </div>
 
