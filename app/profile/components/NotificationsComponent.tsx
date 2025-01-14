@@ -63,9 +63,12 @@ const NotificationsComponent = () => {
           name: detail.name,
           email: detail.email,
           subject: `Pembayaran Channel ${detail.channelName} ${arg ? 'berhasil di-approve' : 'ditolak'}`,
-          htmlContent: `Pembayaran Channel ${detail.channelName} ${arg ? 'berasil di-approve' : 'ditolak'} 
-              ${arg ? `Klik link di bawah untuk masuk ke grup telegram ${detail.channelName?.toUpperCase()} <br />
-                <a href="${detail?.channelTelegram}">${detail?.channelTelegram}</a>` : <></>}`,
+          htmlContent: arg ? `<div style="display:block;">
+          <p>Pembayaran Channel ${detail.channelName} berasil di-approve</p>
+          <br />
+          <p>Klik link di bawah untuk masuk ke grup telegram ${detail.channelName?.toUpperCase()} </p>
+          <a href="${detail?.channelTelegram}">${detail?.channelTelegram}</a>
+          </div>` : `Maaf anda tidak dapat bergabung digroup private Vvip mesy pembayaran tidak sah bukti transaksi tidak valid ,<strong>SILAHKAN DAFTAR KEMBALI</strong> 🙏🏻`,
           bcc: [
             { name: 'Reinhart', email: 'reinhartsams@gmail.com' },
           ],
