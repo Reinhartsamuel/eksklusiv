@@ -34,6 +34,7 @@ const ProfilePage = () => {
   const params = useParams<{ id: string }>();
   const { id } = params;
   const [uploading, setUploading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [inputs, setInputs] = useState({
     name: '',
     email: '',
@@ -90,6 +91,7 @@ const ProfilePage = () => {
     if (!inputs.userTelegram) return Swal.fire('Kamu belum mengisi Telegram kamu!', '', 'warning');
     if (!inputs.receiptUrl) return Swal.fire('Isi semua data, ya!', 'Kamu harus upload bukti bayar berlangganan', 'warning');
 
+    setLoading(true);
     try {
       // return console.log(inputs)
       const saveData = {
@@ -161,6 +163,8 @@ const ProfilePage = () => {
           text: error.message,
         });
       }
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -399,7 +403,9 @@ const ProfilePage = () => {
               </label>
             </div>
           )}
-          <button className='btn btn-primary text-white' onClick={onSubmit}>Submit</button>
+          <button className='btn btn-primary text-white' onClick={onSubmit} disabled={loading}>
+            {loading ?  <span className='loading loading-dots loading-md'></span> : 'Submit'}
+          </button>
         </div>
       </div>
       {/* MODAL */}

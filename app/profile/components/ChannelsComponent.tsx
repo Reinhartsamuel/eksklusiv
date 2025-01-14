@@ -16,7 +16,7 @@ const ChannelsComponent = () => {
       }
     ],
     limitQuery: 10,
-    dependencies: [],
+    dependencies: [authFirebase.currentUser?.uid],
     authRequired: true
   })
 
