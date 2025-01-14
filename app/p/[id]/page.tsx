@@ -205,7 +205,7 @@ const ProfilePage = () => {
       <div className='px-5'>
         <div className='-translate-y-[30px] block'>
           <p className='font-bold text-2xl tracking-light font-mono'>
-            {channelData.name}
+            {channelData.channelName}
             <span className='badge bg-orange-50 font-sans'>🔥 15.2K</span>
           </p>
           <div className='flex items-center'>
