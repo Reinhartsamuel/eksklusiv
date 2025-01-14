@@ -118,7 +118,7 @@ const ProfilePage = () => {
         body: JSON.stringify({
           name: channelData.channelOwnerName,
           email: channelData.channelOwnerEmail,
-          subject: `${inputs.name} membayar Rp ${priceFormat(saveData.amount)} untuk ${channelData.name}`,
+          subject: `${inputs.name} membayar Rp ${priceFormat(saveData.amount)} untuk ${channelData.channelName}`,
           htmlContent: `<p>${inputs.name} membayar Rp ${priceFormat(saveData.amount)} untuk Pembayaran Channel ${saveData.channelName} </p>
                 <br />
              <p>Nama : ${saveData.name}</p> <br/>
