@@ -65,7 +65,7 @@ const NotificationsComponent = () => {
           subject: `Pembayaran Channel ${detail.channelName} ${arg ? 'berhasil di-approve' : 'ditolak'}`,
           htmlContent: `Pembayaran Channel ${detail.channelName} ${arg ? 'berasil di-approve' : 'ditolak'} 
           Klik link di bawah untuk masuk ke grup telegram ${detail.channelName?.toUpperCase()}
-          <a href="${detail?.channelTelegram}">${detail?.channelTelegram}</a>
+          ${arg && `<a href="${detail?.channelTelegram}">${detail?.channelTelegram}</a>`}
           `,
           bcc: [
             { name: 'Reinhart', email: 'reinhartsams@gmail.com' },
