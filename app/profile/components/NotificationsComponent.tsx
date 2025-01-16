@@ -25,7 +25,8 @@ const NotificationsComponent = () => {
     conditions: [
       {
         field: 'channelOwnerUid', operator: '==',
-        value: authFirebase.currentUser?.uid || ''
+        value: '4vGDzEVXAbhYhWqFoOPRgLPJcLT2'
+        // value: authFirebase.currentUser?.uid || ''
       }
     ],
     limitQuery: 10,
@@ -39,7 +40,8 @@ const NotificationsComponent = () => {
     conditions: [
       {
         field: 'channelOwnerUid', operator: '==',
-        value: authFirebase.currentUser?.uid || ''
+        value: '4vGDzEVXAbhYhWqFoOPRgLPJcLT2'
+        // value: authFirebase.currentUser?.uid || ''
       }
     ],
   })
@@ -97,11 +99,11 @@ const NotificationsComponent = () => {
 
   return (
     <div className='flex flex-col gap-2'>
-      <InfiniteScroll
+      {/* <InfiniteScroll
         dataLength={notificatioNCount} //This is important field to render the next data
         next={() => {
           console.log('load more');
-          loadMore();
+          // loadMore();
         }}
         hasMore={true}
         loader={
@@ -136,7 +138,7 @@ const NotificationsComponent = () => {
               <img src={x.userAvatar || 'https://liccar.com/wp-content/uploads/png-transparent-head-the-dummy-avatar-man-tie-jacket-user-768x768.png'} className='w-10 h-10 rounded-full' />
               <div className='flex flex-col'>
                 <p className='text-xs lg:text-sm text-gray-600'>
-                  <span className='font-bold text-gray-900'>{x.name}</span>{' '}
+                  <span className='font-bold text-gray-900'>{i+1}. {x.name}</span>{' '}
                    membayar Rp {priceFormat(x.amount)} untuk channel {x?.channelName}
 
                 </p>
@@ -164,8 +166,47 @@ const NotificationsComponent = () => {
             </div>
           </div>
         ))}
-      </InfiniteScroll>
+      </InfiniteScroll> */}
+      {Array.isArray(payments) && payments.map((x, i) => (
+        <div
+          key={i}
+          onClick={() => openDetail(x)}
+          className='flex w-full justify-between border-b border-gray-200 cursor-pointer hover:bg-gray-100 p-4 lg:p-5 active:scale-95 transition-ease 1s'
+        >
+          <div className='flex flex-row items-center gap-2'>
+            <img src={x.userAvatar || 'https://liccar.com/wp-content/uploads/png-transparent-head-the-dummy-avatar-man-tie-jacket-user-768x768.png'} className='w-10 h-10 rounded-full' />
+            <div className='flex flex-col'>
+              <p className='text-xs lg:text-sm text-gray-600'>
+                <span className='font-bold text-gray-900'>{i + 1}. {x.name}</span>{' '}
+                membayar Rp {priceFormat(x.amount)} untuk channel {x?.channelName}
 
+              </p>
+
+              <div className='flex gap-2'>
+                <p className='text-sm text-gray-600'> {moment(x.createdAt.toDate()).fromNow()}</p>
+                <span
+                  className={
+                    clsx("font-bold me-2 px-1 py-0.5 rounded text-xs w-fit",
+                      x.status === 'PAID' ?
+                        'bg-green-100 text-green-800' :
+                        'bg-pink-100 text-pink-800'
+                    )
+                  }>
+                  {x.status}
+                </span>
+              </div>
+
+            </div>
+
+          </div>
+
+          <div className='min-w-[100px] flex justify-end'>
+            <img src={x.receiptUrl || 'https://liccar.com/wp-content/uploads/png-transparent-head-the-dummy-avatar-man-tie-jacket-user-768x768.png'} className='w-20 aspect-square rounded-sm object-contain border-[1px] border-gray-200' />
+          </div>
+        </div>
+      ))}
+
+      <button className='btn text-xs' onClick={loadMore}>Load more</button>
 
 
 
