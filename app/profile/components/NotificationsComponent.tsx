@@ -7,7 +7,7 @@ import { updateDocumentFirebase } from '@/app/utils/firebaseUtils';
 import { priceFormat } from '@/app/utils/priceFormat';
 import { Payments } from '@/types';
 import moment from 'moment';
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Swal from 'sweetalert2';
 import clsx from 'clsx';
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -45,6 +45,10 @@ const NotificationsComponent = () => {
       }
     ],
   })
+
+  const observerTarget = useRef<HTMLDivElement>(null);
+
+
   function openDetail(data: Payments) {
     setDetail(data);
     (document.getElementById('detail_modal') as HTMLDialogElement).showModal()
@@ -97,6 +101,26 @@ const NotificationsComponent = () => {
     }
   }
 
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      entries => {
+        if (entries[0].isIntersecting) {
+          console.count('should be loading more')
+        }
+      },
+      { threshold: 1 }
+    );
+
+    if (observerTarget.current) {
+      observer.observe(observerTarget.current);
+    }
+
+    return () => {
+      if (observerTarget.current) {
+        observer.unobserve(observerTarget.current);
+      }
+    };
+  }, [observerTarget]);
   return (
     <div className='flex flex-col gap-2'>
       {/* <InfiniteScroll
@@ -207,6 +231,7 @@ const NotificationsComponent = () => {
       ))}
 
       <button className='btn text-xs' onClick={loadMore}>Load more</button>
+      <div ref={observerTarget}></div>
 
 
 
