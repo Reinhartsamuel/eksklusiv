@@ -10,9 +10,6 @@ import moment from 'moment';
 import React, { useEffect, useRef, useState } from 'react';
 import Swal from 'sweetalert2';
 import clsx from 'clsx';
-import InfiniteScroll from 'react-infinite-scroll-component';
-import useCountDocuments from '@/app/hooks/countHook';
-
 
 
 const NotificationsComponent = () => {
@@ -20,13 +17,17 @@ const NotificationsComponent = () => {
   const [detail, setDetail] = useState({} as Payments);
   const [loading, setLoading] = useState(false);
 
-  const { data: payments, loadMore, fetchData, isFetchingMore } = useFetchData({
+  const { data: payments,
+     loadMore,
+    //  isFetchingMore, 
+    //  fetchData,
+    } = useFetchData({
     collectionName: 'payments',
     conditions: [
       {
         field: 'channelOwnerUid', operator: '==',
-        // value: '4vGDzEVXAbhYhWqFoOPRgLPJcLT2'
-        value: authFirebase.currentUser?.uid || ''
+        value: '4vGDzEVXAbhYhWqFoOPRgLPJcLT2'
+        // value: authFirebase.currentUser?.uid || ''
       }
     ],
     limitQuery: 10,
@@ -35,16 +36,16 @@ const NotificationsComponent = () => {
   })
 
 
-  const { count: notificatioNCount } = useCountDocuments({
-    collectionName: 'payments',
-    conditions: [
-      {
-        field: 'channelOwnerUid', operator: '==',
-        // value: '4vGDzEVXAbhYhWqFoOPRgLPJcLT2'
-        value: authFirebase.currentUser?.uid || ''
-      }
-    ],
-  })
+  // const { count: notificatioNCount } = useCountDocuments({
+  //   collectionName: 'payments',
+  //   conditions: [
+  //     {
+  //       field: 'channelOwnerUid', operator: '==',
+  //       value: '4vGDzEVXAbhYhWqFoOPRgLPJcLT2'
+  //       // value: authFirebase.currentUser?.uid || ''
+  //     }
+  //   ],
+  // })
 
   const observerTarget = useRef<HTMLDivElement>(null);
 
