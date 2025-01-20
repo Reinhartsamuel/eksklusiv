@@ -246,6 +246,7 @@ const NotificationsComponent = () => {
           <p className="">Emai: <span className='font-bold'>{detail.email}</span></p>
           <p className="">Telegram: <span className='font-bold'>{detail.userTelegram}</span></p>
           <p className="">Whatsapp: <span className='font-bold'>{detail.userWhatsapp}</span></p>
+          <p className="">Time: <span className='font-bold'>{moment.unix(detail.createdAt.seconds).format(' HH:mm, dddd D MMM YYYY')}</span></p>
           <img
             src={detail.receiptUrl || 'https://liccar.com/wp-content/uploads/png-transparent-head-the-dummy-avatar-man-tie-jacket-user-768x768.png'}
             className='w-full aspect-square rounded-sm object-contain border-[1px] border-gray-200'
