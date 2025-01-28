@@ -10,6 +10,7 @@ import moment from 'moment';
 import React, { useEffect, useRef, useState } from 'react';
 import Swal from 'sweetalert2';
 import clsx from 'clsx';
+import ApproveTemplate from '@/app/templates/ApprovedTemplate';
 
 
 const NotificationsComponent = () => {
@@ -68,12 +69,11 @@ const NotificationsComponent = () => {
           name: detail.name,
           email: detail.email,
           subject: `Pembayaran Channel ${detail.channelName} ${arg ? 'berhasil di-approve' : 'ditolak'}`,
-          htmlContent: arg ? `<div style="display:block;">
-          <p>Pembayaran Channel ${detail.channelName} berasil di-approve</p>
-          <br />
-          <p>Klik link di bawah untuk masuk ke grup telegram ${detail.channelName?.toUpperCase()} </p>
-          <a href="${detail?.channelTelegram}">${detail?.channelTelegram}</a>
-          </div>` : `Maaf anda tidak dapat bergabung digroup private Vvip mesy pembayaran tidak sah bukti transaksi tidak valid ,<strong>SILAHKAN DAFTAR KEMBALI</strong> 🙏🏻`,
+          htmlContent: arg ? ApproveTemplate({
+            channelName: detail.channelName,
+            avatar: 'https://res.qetemu.top/sys/20241023/03792336e5614f57b237e6b8c9343a7d.jpeg?x-oss-process=image/resize,w_150/quality,q_90',
+            telegram: detail.channelTelegram,
+          }) : `Maaf anda tidak dapat bergabung di group ${detail.channelName} pembayaran tidak sah bukti transaksi tidak valid,<strong>SILAHKAN DAFTAR KEMBALI</strong> 🙏🏻`,
           bcc: [
             { name: 'Reinhart', email: 'reinhartsams@gmail.com' },
           ],
@@ -122,74 +122,6 @@ const NotificationsComponent = () => {
   }, [observerTarget]);
   return (
     <div className='flex flex-col gap-2'>
-      {/* <InfiniteScroll
-        dataLength={notificatioNCount} //This is important field to render the next data
-        next={() => {
-          console.log('load more');
-          // loadMore();
-        }}
-        hasMore={true}
-        loader={
-          isFetchingMore && 
-          <div className='w-full flex justify-center'>
-            <span className="loading loading-ring loading-md"></span>
-          </div>
-        }
-        endMessage={
-          <p style={{ textAlign: 'center' }}>
-            <b>Tidak ada data baru</b>
-          </p>
-        }
-        // below props only if you need pull down functionality
-        refreshFunction={fetchData}
-        pullDownToRefresh
-        pullDownToRefreshThreshold={50}
-        pullDownToRefreshContent={
-          <h3 style={{ textAlign: 'center' }}>&#8595; Pull down to refresh</h3>
-        }
-        releaseToRefreshContent={
-          <h3 style={{ textAlign: 'center' }}>&#8593; Release to refresh</h3>
-        }
-      >
-        {Array.isArray(payments) && payments.map((x, i) => (
-          <div
-            key={i}
-            onClick={() => openDetail(x)}
-            className='flex w-full justify-between border-b border-gray-200 cursor-pointer hover:bg-gray-100 p-4 lg:p-5 active:scale-95 transition-ease 1s'
-          >
-            <div className='flex flex-row items-center gap-2'>
-              <img src={x.userAvatar || 'https://liccar.com/wp-content/uploads/png-transparent-head-the-dummy-avatar-man-tie-jacket-user-768x768.png'} className='w-10 h-10 rounded-full' />
-              <div className='flex flex-col'>
-                <p className='text-xs lg:text-sm text-gray-600'>
-                  <span className='font-bold text-gray-900'>{i+1}. {x.name}</span>{' '}
-                   membayar Rp {priceFormat(x.amount)} untuk channel {x?.channelName}
-
-                </p>
-
-                <div className='flex gap-2'>
-                  <p className='text-sm text-gray-600'> {moment(x.createdAt.toDate()).fromNow()}</p>
-                  <span
-                    className={
-                      clsx("font-bold me-2 px-1 py-0.5 rounded text-xs w-fit",
-                        x.status === 'PAID' ?
-                          'bg-green-100 text-green-800' :
-                          'bg-pink-100 text-pink-800'
-                          )
-                    }>
-                    {x.status}
-                  </span>
-                </div>
-
-              </div>
-
-            </div>
-
-            <div className='min-w-[100px] flex justify-end'>
-              <img src={x.receiptUrl || 'https://liccar.com/wp-content/uploads/png-transparent-head-the-dummy-avatar-man-tie-jacket-user-768x768.png'} className='w-20 aspect-square rounded-sm object-contain border-[1px] border-gray-200' />
-            </div>
-          </div>
-        ))}
-      </InfiniteScroll> */}
       {Array.isArray(payments) && payments.map((x, i) => (
         <div
           key={i}

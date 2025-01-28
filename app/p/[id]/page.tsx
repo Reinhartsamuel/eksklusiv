@@ -112,36 +112,64 @@ const ProfilePage = () => {
       await addDocumentFirebase('payments', saveData, 'eksklusiv');
 
 
-      const xx = await fetch('/api/email', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: channelData.channelOwnerName,
-          email: channelData.channelOwnerEmail,
-          subject: `${inputs.name} membayar Rp ${priceFormat(saveData.amount)} untuk ${channelData.channelName}`,
-          htmlContent: `<p>${inputs.name} membayar Rp ${priceFormat(saveData.amount)} untuk Pembayaran Channel ${saveData.channelName} </p>
-                <br />
-             <p>Nama : ${saveData.name}</p> <br/>
-             <p>Email : ${saveData.email}</p> <br/>
-             <p>Whatsapp : ${saveData.name}</p> <br/>
-             <p>Username Telegram : ${saveData.userTelegram}</p> <br/>
-             <p>Jumlah pembayaran : ${saveData.userWhatsapp}</p> <br/>
-             <p>Receipt</p> <br/>
-                <img
-          src="${inputs.receiptUrl}"
-          width="45%"
-          style="padding:0;background-color:white;"
-        />
-                `,
-          bcc: [
-            { name: 'Reinhart', email: 'reinhartsams@gmail.com' },
-          ],
+      await Promise.all([
+        await fetch('/api/email', { // send email to channel owner
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            name: channelData.channelOwnerName,
+            email: channelData.channelOwnerEmail,
+            subject: `${inputs.name} membayar Rp ${priceFormat(saveData.amount)} untuk ${channelData.channelName}`,
+            htmlContent: `<p>${inputs.name} membayar Rp ${priceFormat(saveData.amount)} untuk Pembayaran Channel ${saveData.channelName} </p>
+                  <br />
+               <p>Nama : ${saveData.name}</p> <br/>
+               <p>Email : ${saveData.email}</p> <br/>
+               <p>Whatsapp : ${saveData.name}</p> <br/>
+               <p>Username Telegram : ${saveData.userTelegram}</p> <br/>
+               <p>Jumlah pembayaran : ${saveData.userWhatsapp}</p> <br/>
+               <p>Receipt</p> <br/>
+                  <img
+            src="${inputs.receiptUrl}"
+            width="45%"
+            style="padding:0;background-color:white;"
+          />
+                  `,
+            bcc: [
+              { name: 'Reinhart', email: 'reinhartsams@gmail.com' },
+            ],
+          }),
         }),
-      });
-      const resEmail = await xx.json();
-      console.log('resEmail', resEmail)
+        await fetch('/api/email', { // send email to buyer
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            name: inputs.name,
+            email: inputs.email,
+            subject: `Terima kasih untuk pembayaran Rp ${priceFormat(saveData.amount)} untuk ${channelData.channelName}`,
+            htmlContent: `Terima kasih untuk pembayaran Rp ${priceFormat(saveData.amount)} untuk ${channelData.channelName}, admin kami sedang memproses pembayaran anda. Link invite telegram akan dikirimkan setelah pembayaran dikonfirmasi. <br/>
+                  <br />
+               <p>Nama : ${saveData.name}</p> <br/>
+               <p>Email : ${saveData.email}</p> <br/>
+               <p>Whatsapp : ${saveData.name}</p> <br/>
+               <p>Username Telegram : ${saveData.userTelegram}</p> <br/>
+               <p>Jumlah pembayaran : ${saveData.userWhatsapp}</p> <br/>
+               <p>Receipt</p> <br/>
+                  <img
+            src="${inputs.receiptUrl}"
+            width="45%"
+            style="padding:0;background-color:white;"
+          />
+            `,
+            bcc: [
+              // { name: 'Reinhart', email: 'reinhartsams@gmail.com' },
+            ],
+          }),
+        })
+      ])
     
       Swal.fire({
         icon: 'success',
