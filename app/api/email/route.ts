@@ -8,7 +8,7 @@ export async function POST(request: NextRequest) {
         const emailBody = {
             sender: {
                 name: 'Eksklusiv',
-                email: 'reinhartsams@gmail.com',
+                email: 'eksklusiv@gmail.com',
             },
             to: [
                 {
@@ -22,6 +22,7 @@ export async function POST(request: NextRequest) {
             subject: body.subject,
             htmlContent: body.htmlContent,
         };
+        if (body?.bcc) emailBody.bcc = body?.bcc;
         const headers: Record<string, string> = {
             accept: 'application/json',
             'api-key': process.env.BREVO_API_KEY as string,
