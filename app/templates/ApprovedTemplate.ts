@@ -30,6 +30,7 @@ export default function ApproveTemplate(data: Info) {
                         text-align: center;
                         width: 300px;
                         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+                        align-self:center;
                     }
 
                     .card img {
@@ -72,7 +73,7 @@ export default function ApproveTemplate(data: Info) {
                     <h1 style='font-family: "Gill Sans", cursive; text-align:center;'>
                     Pembayaran Channel ${data.channelName} berhasil.
                     </h1>
-                    <p>
+                    <p style='text-align:center;'>
                         Terima kasih atas pembayaran anda. Klik tombol di bawah untuk masuk ke grup telegram:
                     </p>
 
