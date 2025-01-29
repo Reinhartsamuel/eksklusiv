@@ -79,7 +79,6 @@ export default function ApproveTemplate(data: Info) {
                 <div class='card'>
                     <img src='${data.avatar}' alt='Profile Picture'>
                     <h1>${data.channelName}</h1>
-                    <p>2 members</p>
                     <a href='${data.telegram}' class='join-btn'>JOIN GROUP</a>
                 </div>
                 </body>
