@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable @next/next/no-img-element */
 'use client'
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import React, { useEffect, useState, ChangeEvent } from 'react';
 import telegram_logo from '../../../public/Telegram_logo.svg';
 import pricetag from '../../../public/pricetag.png';
@@ -32,6 +32,7 @@ const IMAGES_VIDS = [
 
 const ProfilePage = () => {
   const params = useParams<{ id: string }>();
+  const router = useRouter();
   const { id } = params;
   const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -219,6 +220,22 @@ const ProfilePage = () => {
   }, []);
 
 
+  if (!channelData || Object.keys(channelData).length === 0) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-4xl font-bold mb-4">Channel Not Found</h1>
+          <p className="text-gray-600 mb-4">The channel you&apos;re looking for doesn&apos;t exist or has been removed.</p>
+          <button 
+            onClick={() => router.push('/')}
+            className="btn btn-primary text-white"
+          >
+            Go Back Home
+          </button>
+        </div>
+      </div>
+    );
+  }
   return (
     <div className='min h-screen mb-[100rem]'>
       <img
@@ -238,7 +255,9 @@ const ProfilePage = () => {
         <div className='-translate-y-[30px] block'>
           <p className='font-bold text-2xl tracking-light font-mono'>
             {channelData.channelName}
-            <span className='badge bg-orange-50 font-sans'>🔥 15.2K</span>
+            {channelData.id === 'XC7FiNFyw1GI88CR6jUw' &&
+             <span className='badge bg-orange-50 font-sans'>🔥 15.2K</span>
+             }
           </p>
           <div className='flex items-center'>
             {channelData.telegram && (

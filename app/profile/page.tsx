@@ -46,7 +46,7 @@ const ProfilePage = () => {
               <div className="flex justify-between">
                 <p className='font-bold text-2xl tracking-light font-mono'>
                   {authFirebase.currentUser?.displayName}
-                  <span className='badge bg-orange-50 font-sans'>🔥 15.2K</span>
+                  <span className='badge bg-orange-50 font-sans'>🔥 0</span>
                 </p>
                 {isLoggedIn && <button className='btn' onClick={async () => {
                   await authFirebase.signOut()
