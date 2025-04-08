@@ -28,6 +28,7 @@ export default function Home() {
           <kbd className="kbd kbd-sm">⌘</kbd>
           <kbd className="kbd kbd-sm">K</kbd>
         </label>
+        
         <IoIosSearch size={20} />
         <IoChatbubbleOutline size={20} />
       </div>
